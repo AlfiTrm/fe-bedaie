@@ -18,10 +18,9 @@ const dashboardItems: Omit<DashboardNavigationItem, "active">[] = [
     icon: "solar:documents-linear",
   },
   {
-    href: "#",
+    href: "/dashboard/generate",
     label: "Generate New",
     icon: "solar:magic-stick-3-linear",
-    disabled: true,
   },
 ] as const;
 
@@ -30,13 +29,20 @@ export function getDashboardNavigationState(
 ): DashboardNavigationState {
   const items = dashboardItems.map((item) => ({
     ...item,
-    active: !item.disabled && pathname === item.href,
+    active:
+      !item.disabled &&
+      ((item.href === "/dashboard" &&
+        (pathname === "/dashboard" || pathname.startsWith("/dashboard/pages/"))) ||
+        (item.href !== "/dashboard" && pathname.startsWith(item.href))),
   }));
 
+  const currentLabel = pathname.startsWith("/dashboard/pages/")
+    ? "Preview"
+    : items.find((item) => item.active)?.label ??
+      (pathname.startsWith("/dashboard") ? "Workspace" : "Dashboard");
+
   return {
-    currentLabel:
-      items.find((item) => item.active)?.label ??
-      (pathname.startsWith("/dashboard") ? "Workspace" : "Dashboard"),
+    currentLabel,
     items,
   };
 }

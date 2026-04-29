@@ -25,8 +25,8 @@ export function DashboardHome({ records }: DashboardHomeProps) {
           </h3>
           <p className="max-w-2xl text-sm leading-8 text-[var(--color-text-muted)] sm:text-base">
             Keep track of generated pages, revisit the strongest drafts, and
-            manage what stays in your library before moving into preview and
-            generation work.
+            manage what stays in your library as you move from brief to saved
+            preview.
           </p>
         </div>
         <div className="mt-8 grid gap-4 border-t border-white/8 pt-6 sm:grid-cols-3">
@@ -70,11 +70,11 @@ export function DashboardHome({ records }: DashboardHomeProps) {
           </ul>
         </div>
         <div className="panel-surface rounded-[1.75rem] p-6">
-          <p className="text-base font-semibold text-white">Coming next</p>
+          <p className="text-base font-semibold text-white">Use this workflow</p>
           <ul className="mt-4 space-y-3 text-sm leading-7 text-[var(--color-text-muted)]">
             <li>Generate a new page with DeepSeek through Sumopod.</li>
             <li>Save the result automatically after generation succeeds.</li>
-            <li>Open a dedicated preview/detail page for each record.</li>
+            <li>Open a dedicated preview/detail page for each saved record.</li>
           </ul>
         </div>
       </div>

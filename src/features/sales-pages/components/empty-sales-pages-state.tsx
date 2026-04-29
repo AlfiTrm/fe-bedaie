@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function EmptySalesPagesState() {
   return (
     <section className="panel-surface rounded-[1.75rem] p-8 sm:p-10">
@@ -12,6 +14,14 @@ export function EmptySalesPagesState() {
           Once you start generating and saving pages, this workspace will show
           your full library here so you can review, preview, or remove drafts.
         </p>
+        <div className="pt-2">
+          <Link
+            href="/dashboard/generate"
+            className="primary-button inline-flex items-center justify-center"
+          >
+            Create first sales page
+          </Link>
+        </div>
       </div>
     </section>
   );

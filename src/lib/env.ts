@@ -1,4 +1,16 @@
 const trimTrailingSlash = (value: string) => value.replace(/\/+$/, "");
+const LEGACY_SUMOPOD_BASE_URL = "https://api.sumopod.com/v1";
+const DEFAULT_SUMOPOD_BASE_URL = "https://ai.sumopod.com/v1";
+
+function normalizeSumopodBaseUrl(value: string) {
+  const trimmed = trimTrailingSlash(value);
+
+  if (trimmed === LEGACY_SUMOPOD_BASE_URL) {
+    return DEFAULT_SUMOPOD_BASE_URL;
+  }
+
+  return trimmed;
+}
 
 function requireEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -15,8 +27,8 @@ export function getLaravelApiBaseUrl(): string {
 }
 
 export function getSumopodConfig() {
-  const baseUrl = trimTrailingSlash(
-    process.env.SUMOPOD_API_BASE_URL?.trim() || "https://api.sumopod.com/v1",
+  const baseUrl = normalizeSumopodBaseUrl(
+    process.env.SUMOPOD_API_BASE_URL?.trim() || DEFAULT_SUMOPOD_BASE_URL,
   );
 
   return {

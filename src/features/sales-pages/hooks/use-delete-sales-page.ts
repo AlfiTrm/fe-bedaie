@@ -11,13 +11,20 @@ export function useDeleteSalesPage() {
   const [activeId, setActiveId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  function remove(id: number) {
+  function remove(id: number, redirectTo?: string) {
     setErrorMessage(null);
     setActiveId(id);
 
     startTransition(async () => {
       try {
         await deleteSalesPageClient(id);
+
+        if (redirectTo) {
+          router.push(redirectTo);
+          router.refresh();
+          return;
+        }
+
         router.refresh();
       } catch (error) {
         setErrorMessage(
