@@ -23,6 +23,11 @@ function serializeAiOutput(aiOutput: AiOutput) {
       call_to_action_text: aiOutput.pricing.callToActionText,
       guarantee: aiOutput.pricing.guarantee,
     },
+    ...(aiOutput.previewHtml
+      ? {
+          preview_html: aiOutput.previewHtml,
+        }
+      : {}),
   };
 }
 
@@ -73,7 +78,7 @@ export async function createSalesPage(
   token: string,
   input: GeneratorInput,
   aiOutput: AiOutput,
-  theme = "dark-luxury",
+  theme = "clean-midnight",
 ) {
   const response = await requestJson<unknown>(buildLaravelUrl("/api/sales-pages"), {
     method: "POST",

@@ -14,9 +14,9 @@ export function useGenerateForm() {
     createGeneratorDraftValues,
   );
 
-  const updateField = (
-    field: keyof GeneratorDraftValues,
-    value: string,
+  const updateField = <TField extends keyof GeneratorDraftValues>(
+    field: TField,
+    value: GeneratorDraftValues[TField],
   ) => {
     setValues((currentValue) => ({
       ...currentValue,

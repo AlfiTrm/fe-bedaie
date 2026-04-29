@@ -8,8 +8,11 @@ import {
 import { generateSalesCopyText } from "@/src/features/generator/services/sumopod.server";
 import { createSalesPage } from "@/src/features/sales-pages/services/sales-pages-api.server";
 
-export async function generateAiOutput(input: GeneratorInput) {
-  const text = await generateSalesCopyText(input);
+export async function generateAiOutput(
+  input: GeneratorInput,
+  theme = "clean-midnight",
+) {
+  const text = await generateSalesCopyText(input, theme);
 
   try {
     return extractAiOutputFromText(text);
@@ -21,7 +24,8 @@ export async function generateAiOutput(input: GeneratorInput) {
 export async function generateAndSaveSalesPage(
   token: string,
   input: GeneratorInput,
+  theme = "clean-midnight",
 ) {
-  const aiOutput = await generateAiOutput(input);
-  return createSalesPage(token, input, aiOutput);
+  const aiOutput = await generateAiOutput(input, theme);
+  return createSalesPage(token, input, aiOutput, theme);
 }

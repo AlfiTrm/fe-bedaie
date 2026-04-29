@@ -5,11 +5,13 @@ import { useDeleteSalesPage } from "@/src/features/sales-pages/hooks/use-delete-
 interface DeleteSalesPageButtonProps {
   id: number;
   redirectTo?: string;
+  variant?: "dark" | "light";
 }
 
 export function DeleteSalesPageButton({
   id,
   redirectTo,
+  variant = "dark",
 }: DeleteSalesPageButtonProps) {
   const { activeId, errorMessage, isPending, remove } = useDeleteSalesPage();
   const deleting = isPending && activeId === id;
@@ -21,7 +23,11 @@ export function DeleteSalesPageButton({
       ) : null}
       <button
         type="button"
-        className="rounded-xl border border-white/8 px-3 py-2 text-sm text-[var(--color-text-muted)] transition hover:border-white/16 hover:bg-white/4 hover:text-white"
+        className={
+          variant === "light"
+            ? "landing-secondary-button landing-secondary-button-midnight landing-button-compact text-slate-600 hover:text-slate-900"
+            : "landing-secondary-button landing-button-compact border-white/10 bg-white/3 text-[var(--color-text-muted)] hover:border-white/16 hover:bg-white/5 hover:text-white"
+        }
         onClick={() => remove(id, redirectTo)}
         disabled={deleting}
       >

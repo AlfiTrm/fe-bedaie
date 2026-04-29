@@ -5,9 +5,32 @@ import {
   toCleanString,
 } from "../../../lib/utils/object.ts";
 
+const MAX_COPY_WORDS = 30;
+
+function limitWords(value: string, maxWords = MAX_COPY_WORDS): string {
+  const words = value.trim().split(/\s+/).filter(Boolean);
+
+  if (words.length <= maxWords) {
+    return value.trim();
+  }
+
+  return words.slice(0, maxWords).join(" ");
+}
+
+function normalizeOptionalPreviewHtml(value: unknown): string | undefined {
+  if (typeof value !== "string") {
+    return undefined;
+  }
+
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
+}
+
 function normalizeStringList(values: unknown, fieldName: string): string[] {
   const cleaned = asArray(values)
-    .map((value) => (typeof value === "string" ? value.trim() : ""))
+    .map((value) =>
+      typeof value === "string" ? limitWords(value.trim()) : "",
+    )
     .filter(Boolean);
 
   if (cleaned.length === 0) {
@@ -25,10 +48,9 @@ function normalizeBenefits(value: unknown): AiOutput["benefits"] {
       }
 
       return {
-        title: toCleanString(item.title, "benefits.title"),
-        description: toCleanString(
-          item.description,
-          "benefits.description",
+        title: limitWords(toCleanString(item.title, "benefits.title")),
+        description: limitWords(
+          toCleanString(item.description, "benefits.description"),
         ),
       };
     })
@@ -49,8 +71,10 @@ function normalizeSocialProof(value: unknown): AiOutput["socialProof"] {
       }
 
       return {
-        name: toCleanString(item.name, "social_proof.name"),
-        review: toCleanString(item.review, "social_proof.review"),
+        name: limitWords(toCleanString(item.name, "social_proof.name")),
+        review: limitWords(
+          toCleanString(item.review, "social_proof.review"),
+        ),
       };
     })
     .filter((item): item is AiOutput["socialProof"][number] => item !== null);
@@ -108,10 +132,11 @@ export function normalizeAiOutput(rawValue: unknown): AiOutput {
 
   return {
     hero: {
-      headline: toCleanString(rawValue.hero.headline, "hero.headline"),
-      subheadline: toCleanString(
-        rawValue.hero.subheadline,
-        "hero.subheadline",
+      headline: limitWords(
+        toCleanString(rawValue.hero.headline, "hero.headline"),
+      ),
+      subheadline: limitWords(
+        toCleanString(rawValue.hero.subheadline, "hero.subheadline"),
       ),
     },
     benefits: normalizeBenefits(rawValue.benefits),
@@ -120,17 +145,26 @@ export function normalizeAiOutput(rawValue: unknown): AiOutput {
       rawValue.social_proof ?? rawValue.socialProof,
     ),
     pricing: {
-      priceText: toCleanString(
-        rawValue.pricing.price_text ?? rawValue.pricing.priceText,
-        "pricing.price_text",
+      priceText: limitWords(
+        toCleanString(
+          rawValue.pricing.price_text ?? rawValue.pricing.priceText,
+          "pricing.price_text",
+        ),
       ),
-      callToActionText: toCleanString(
-        rawValue.pricing.call_to_action_text ??
-          rawValue.pricing.callToActionText,
-        "pricing.call_to_action_text",
+      callToActionText: limitWords(
+        toCleanString(
+          rawValue.pricing.call_to_action_text ??
+            rawValue.pricing.callToActionText,
+          "pricing.call_to_action_text",
+        ),
       ),
-      guarantee: toCleanString(rawValue.pricing.guarantee, "pricing.guarantee"),
+      guarantee: limitWords(
+        toCleanString(rawValue.pricing.guarantee, "pricing.guarantee"),
+      ),
     },
+    previewHtml: normalizeOptionalPreviewHtml(
+      rawValue.preview_html ?? rawValue.previewHtml,
+    ),
   };
 }
 
@@ -153,37 +187,60 @@ function extractJsonCandidate(text: string): string {
 
 export function extractAiOutputFromText(text: string): AiOutput {
   const parsed = JSON.parse(extractJsonCandidate(text));
+
+  if (isObject(parsed) && isObject(parsed.ai_output)) {
+    const aiOutput = normalizeAiOutput(parsed.ai_output);
+    const previewHtml = normalizeOptionalPreviewHtml(
+      parsed.preview_html ?? parsed.previewHtml,
+    );
+
+    return {
+      ...aiOutput,
+      previewHtml: previewHtml ?? aiOutput.previewHtml,
+    };
+  }
+
   return normalizeAiOutput(parsed);
 }
 
 export function buildFallbackAiOutput(input: GeneratorInput): AiOutput {
   return {
     hero: {
-      headline: `${input.productName} untuk ${input.targetAudience}`,
-      subheadline: `${input.description} Dirancang untuk menonjolkan ${input.usp.toLowerCase()}.`,
+      headline: `${input.price} untuk ${input.productName} yang lebih relevan buat ${input.targetAudience}`,
+      subheadline: `${input.description} Diperkuat oleh ${input.usp.toLowerCase()} agar pengunjung punya alasan jelas untuk bertindak sekarang.`,
     },
     benefits: [
       {
-        title: `Alasan memilih ${input.productName}`,
-        description: `Copy penjualan ini menekankan manfaat paling terasa untuk ${input.targetAudience.toLowerCase()}.`,
+        title: "Lebih mudah melihat nilai utamanya",
+        description: `Penawaran ${input.productName} langsung diarahkan ke kebutuhan ${input.targetAudience.toLowerCase()} tanpa copy yang berputar-putar.`,
       },
       {
-        title: "Lebih mudah dikonversi",
-        description: `Setiap section disusun dari USP, fitur utama, dan harga ${input.price}.`,
+        title: "Benefit dan alasan beli lebih cepat tertangkap",
+        description: `Halaman ini menonjolkan USP, harga ${input.price}, dan manfaat yang paling terasa supaya keputusan terasa lebih ringan.`,
+      },
+      {
+        title: "CTA punya konteks yang lebih meyakinkan",
+        description: `Ajakan beli diperkuat oleh deskripsi produk, fitur utama, dan jaminan yang mendukung konversi.`,
       },
     ],
-    features: input.keyFeatures.length >= 2
+    features: input.keyFeatures.length >= 3
       ? input.keyFeatures
-      : [...input.keyFeatures, input.usp],
+      : [...input.keyFeatures, input.usp, `Harga ${input.price}`].filter(
+          (value, index, values) => values.indexOf(value) === index,
+        ),
     socialProof: [
       {
-        name: "Pelanggan awal",
-        review: `${input.productName} terasa lebih meyakinkan karena penawaran dan manfaatnya langsung jelas.`,
+        name: "Pembeli awal",
+        review: `${input.productName} terasa lebih menarik karena manfaat, harga, dan ajakan belinya langsung jelas sejak awal.`,
+      },
+      {
+        name: "Pengunjung landing page",
+        review: `Format halamannya membantu saya cepat paham kenapa penawaran ini layak dipertimbangkan tanpa harus baca terlalu lama.`,
       },
     ],
     pricing: {
       priceText: input.price,
-      callToActionText: `Pesan ${input.productName} sekarang`,
+      callToActionText: `Dapatkan ${input.productName} sekarang`,
       guarantee: input.usp,
     },
   };
