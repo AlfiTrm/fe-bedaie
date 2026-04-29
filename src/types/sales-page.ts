@@ -36,6 +36,7 @@ export interface AiOutput {
     callToActionText: string;
     guarantee: string;
   };
+  previewHtml?: string;
 }
 
 export interface SalesPageRecord {

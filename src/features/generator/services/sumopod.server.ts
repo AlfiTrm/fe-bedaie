@@ -39,7 +39,10 @@ function extractTextFromContent(content: unknown): string | null {
   return null;
 }
 
-export async function generateSalesCopyText(input: GeneratorInput) {
+export async function generateSalesCopyText(
+  input: GeneratorInput,
+  theme = "clean-midnight",
+) {
   const config = getSumopodConfig();
   let response: unknown;
 
@@ -62,11 +65,11 @@ export async function generateSalesCopyText(input: GeneratorInput) {
             {
               role: "system",
               content:
-                "You are an expert Indonesian sales page copywriter. Return JSON only.",
+                "You are an expert Indonesian sales page copywriter and HTML landing page builder. Write for a polished landing page, not a dashboard preview. Return JSON only.",
             },
             {
               role: "user",
-              content: buildSalesPagePrompt(input),
+              content: buildSalesPagePrompt(input, theme),
             },
           ],
         }),

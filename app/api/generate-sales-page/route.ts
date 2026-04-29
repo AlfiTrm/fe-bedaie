@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getSessionToken } from "@/src/features/auth/services/auth-session.server";
 import { generateAndSaveSalesPage } from "@/src/features/generator/services/generate-sales-page.server";
 import { validateGeneratorInput } from "@/src/features/generator/services/generator-contracts";
+import { isSalesPageTheme } from "@/src/features/sales-pages/services/sales-page-theme-options";
 import { ApiError } from "@/src/lib/http/api-error";
 
 export async function POST(request: Request) {
@@ -16,8 +17,15 @@ export async function POST(request: Request) {
       );
     }
 
-    const payload = validateGeneratorInput(await request.json());
-    const record = await generateAndSaveSalesPage(token, payload);
+    const body = (await request.json()) as Record<string, unknown>;
+    const payload = validateGeneratorInput(body);
+    const record = await generateAndSaveSalesPage(
+      token,
+      payload,
+      typeof body.theme === "string" && isSalesPageTheme(body.theme)
+        ? body.theme
+        : undefined,
+    );
 
     return NextResponse.json({ id: record.id }, { status: 201 });
   } catch (error) {

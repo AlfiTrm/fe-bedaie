@@ -5,6 +5,7 @@ export interface GeneratePayload {
   target_audience: string;
   price: string;
   usp: string;
+  theme: string;
 }
 
 export interface GenerateResponse {

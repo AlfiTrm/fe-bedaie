@@ -1,34 +1,41 @@
 import type { GeneratorInput } from "@/src/types/sales-page";
 
-export function buildSalesPagePrompt(input: GeneratorInput) {
+export function buildSalesPagePrompt(
+  input: GeneratorInput,
+  theme = "clean-midnight",
+) {
   return [
-    "You are a conversion-focused sales copywriter.",
-    "Return valid JSON only, with no markdown fences or extra commentary.",
+    "You are a senior Indonesian direct-response copywriter and landing page strategist.",
+    "Your task is to produce copy and a complete styled HTML preview for a conversion-oriented sales page.",
+    "Return valid JSON only, with no markdown fences, no extra commentary, and no keys outside the required schema.",
     "Follow this exact shape:",
     JSON.stringify(
       {
-        hero: {
-          headline: "string",
-          subheadline: "string",
-        },
-        benefits: [
-          {
-            title: "string",
-            description: "string",
+        ai_output: {
+          hero: {
+            headline: "string",
+            subheadline: "string",
           },
-        ],
-        features: ["string"],
-        social_proof: [
-          {
-            name: "string",
-            review: "string",
+          benefits: [
+            {
+              title: "string",
+              description: "string",
+            },
+          ],
+          features: ["string"],
+          social_proof: [
+            {
+              name: "string",
+              review: "string",
+            },
+          ],
+          pricing: {
+            price_text: "string",
+            call_to_action_text: "string",
+            guarantee: "string",
           },
-        ],
-        pricing: {
-          price_text: "string",
-          call_to_action_text: "string",
-          guarantee: "string",
         },
+        preview_html: "<!DOCTYPE html>...</html>",
       },
       null,
       2,
@@ -41,13 +48,53 @@ export function buildSalesPagePrompt(input: GeneratorInput) {
     `- Target audience: ${input.targetAudience}`,
     `- Price: ${input.price}`,
     `- USP: ${input.usp}`,
+    `- Accent theme preset: ${theme}`,
     "",
-    "Rules:",
+    "Creative direction:",
+    "- Imagine the result will be rendered as a modern landing page, not an admin preview.",
+    "- The hero must follow AIDA:",
+    "  1. Attention: headline should be bold, urgent, and benefit-led.",
+    "  2. Interest + Desire: subheadline should explain the value, target audience fit, and emotional/rational reason to care.",
+    "  3. Action: subheadline should naturally support a clear next step without sounding robotic.",
+    "- benefits = the strongest reasons to buy now, written as outcome-oriented selling points.",
+    "- features = specific product strengths, specifications, or facility-like breakdowns that feel concrete and useful.",
+    "- social_proof = believable placeholder testimonials from likely buyers or users.",
+    "- pricing = direct close with a clear CTA and a reassuring guarantee/offer line.",
+    "- preview_html = complete single-file landing page HTML that feels like a real website, not raw text blocks.",
+    "",
+    "Copy rules:",
     "- Use persuasive but credible Indonesian copy.",
-    "- Keep the headline sharp and benefit-led.",
-    "- Provide at least 2 benefits.",
-    "- Provide at least 2 features.",
-    "- Provide at least 1 social proof entry.",
-    "- Pricing CTA should feel strong and action-oriented.",
+    "- Avoid generic hype, filler, and repeated phrases.",
+    "- Avoid English marketing jargon unless the product context truly needs it.",
+    "- Make the copy feel ready for a public-facing landing page.",
+    "- Every copy block must stay under 30 words.",
+    "- Headline should be concise, memorable, and easy to scan.",
+    "- Subheadline should be 1-2 sentences max.",
+    "- Keep paragraphs short. Prefer 1-2 concise sentences per block.",
+    "- Benefit titles should be short and punchy.",
+    "- Benefit descriptions should explain why the benefit matters.",
+    "- Features should each be short phrases, not full paragraphs.",
+    "- Provide at least 3 benefits.",
+    "- Provide at least 3 features.",
+    "- Provide at least 2 social proof entries.",
+    "- CTA text should be strong, clear, and action-oriented.",
+    "",
+    "HTML preview rules:",
+    "- preview_html must be a full self-contained HTML document.",
+    "- Use inline <style> only. Do not use external CSS, JS libraries, fonts, or image URLs.",
+    "- Use modern CSS with grid/flexbox and a clean white or light base.",
+    "- Keep the layout clean, modern, responsive, and visually intentional.",
+    "- Prefer short copy blocks with clear hierarchy. Do not flood the page with explanatory filler.",
+    "- The hero section must feel premium and fill the first viewport with min-height: 100vh.",
+    "- Major sections should feel like real website sections, not stacked text cards.",
+    "- Use strong hierarchy: large headline, clear CTA, compact supporting copy, spacious section rhythm.",
+    "- Use one primary CTA style consistently and make it visually prominent.",
+    "- Add visual placeholder blocks or illustration areas so the page feels designed even without real images.",
+    "- Keep each section focused. Avoid repeating the same message in multiple sections.",
+    "- Required sections inside preview_html: hero, keunggulan/manfaat, spesifikasi atau features, testimonial, pricing/offer close, CTA section, contact form, footer.",
+    "- Use the accent theme preset as visual direction for buttons and highlights while keeping a white/light base.",
+    "- Avoid tiny labels, eyebrow text, or decorative section headings that do not help conversion.",
+    "- Add responsive rules for mobile so spacing, font sizes, and section stacking remain clean.",
+    "- Do not include markdown fences.",
   ].join("\n");
 }

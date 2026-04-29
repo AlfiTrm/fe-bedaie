@@ -4,11 +4,13 @@ import Link from "next/link";
 
 import { useGenerateForm } from "@/src/features/generator/hooks/use-generate-form";
 import { useSubmitGenerateForm } from "@/src/features/generator/hooks/use-submit-generate-form";
+import { getSalesPageThemeOptions } from "@/src/features/sales-pages/services/sales-page-theme-options";
 
 export function GenerateSalesPageForm() {
   const { values, keyFeatures, hasMinimumInput, payloadPreview, updateField } =
     useGenerateForm();
   const { errorMessage, isPending, submit } = useSubmitGenerateForm(values);
+  const themeOptions = getSalesPageThemeOptions();
 
   return (
     <section className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
@@ -113,6 +115,29 @@ export function GenerateSalesPageForm() {
                 value={values.usp}
                 onChange={(event) => updateField("usp", event.target.value)}
               />
+            </label>
+
+            <label className="space-y-3 lg:col-span-2">
+              <span className="text-sm font-medium text-white">Accent style</span>
+              <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+                {themeOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    className={
+                      values.theme === option.value
+                        ? "rounded-2xl border border-[var(--color-accent)] bg-white/8 px-4 py-4 text-left"
+                        : "rounded-2xl border border-white/8 bg-white/3 px-4 py-4 text-left hover:border-white/16 hover:bg-white/4"
+                    }
+                    onClick={() => updateField("theme", option.value)}
+                  >
+                    <p className="text-sm font-medium text-white">{option.label}</p>
+                    <p className="mt-1 text-xs text-[var(--color-text-muted)]">
+                      Clean white page with {option.label.toLowerCase()} accents.
+                    </p>
+                  </button>
+                ))}
+              </div>
             </label>
           </div>
 

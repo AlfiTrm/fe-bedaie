@@ -1,5 +1,6 @@
 import { validateGeneratorInput } from "./generator-contracts.ts";
 import type { GeneratePayload } from "./generator-client.ts";
+import type { SalesPageTheme } from "../../sales-pages/services/sales-page-theme-options.ts";
 
 export interface GeneratorDraftValues {
   productName: string;
@@ -8,6 +9,7 @@ export interface GeneratorDraftValues {
   targetAudience: string;
   price: string;
   usp: string;
+  theme: SalesPageTheme;
 }
 
 export function createGeneratorDraftValues(): GeneratorDraftValues {
@@ -18,6 +20,7 @@ export function createGeneratorDraftValues(): GeneratorDraftValues {
     targetAudience: "",
     price: "",
     usp: "",
+    theme: "clean-midnight",
   };
 }
 
@@ -47,5 +50,6 @@ export function buildGeneratePayload(
     target_audience: normalized.targetAudience,
     price: normalized.price,
     usp: normalized.usp,
+    theme: values.theme,
   };
 }
