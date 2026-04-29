@@ -1,8 +1,15 @@
 "use client";
 
-import { useLogout } from "@/src/features/dashboard/hooks/use-logout";
+import { Icon } from "@iconify/react";
 
-export function LogoutButton() {
+import { useLogout } from "@/src/features/dashboard/hooks/use-logout";
+import { cn } from "@/src/lib/utils/cn";
+
+interface LogoutButtonProps {
+  compact?: boolean;
+}
+
+export function LogoutButton({ compact = false }: LogoutButtonProps) {
   const { errorMessage, isPending, logout } = useLogout();
 
   return (
@@ -12,11 +19,17 @@ export function LogoutButton() {
       ) : null}
       <button
         type="button"
-        className="w-full rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm font-semibold text-white transition hover:border-[var(--color-accent)] hover:bg-white/10"
+        aria-label={isPending ? "Logging out" : "Logout"}
+        title={compact ? "Logout" : undefined}
+        className={cn(
+          "flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/6 px-4 py-3 text-sm font-semibold text-white transition hover:border-[var(--color-accent)] hover:bg-white/10",
+          compact && "px-3",
+        )}
         onClick={logout}
         disabled={isPending}
       >
-        {isPending ? "Logging out..." : "Logout"}
+        <Icon icon="solar:logout-2-linear" width={18} />
+        {compact ? null : isPending ? "Logging out..." : "Logout"}
       </button>
     </div>
   );
