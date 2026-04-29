@@ -41,36 +41,49 @@ function extractTextFromContent(content: unknown): string | null {
 
 export async function generateSalesCopyText(input: GeneratorInput) {
   const config = getSumopodConfig();
-  const response = await requestJson<unknown>(
-    `${config.baseUrl}/chat/completions`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${config.apiKey}`,
-      },
-      body: JSON.stringify({
-        model: config.model,
-        temperature: 0.8,
-        response_format: {
-          type: "json_object",
+  let response: unknown;
+
+  try {
+    response = await requestJson<unknown>(
+      `${config.baseUrl}/chat/completions`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${config.apiKey}`,
         },
-        messages: [
-          {
-            role: "system",
-            content:
-              "You are an expert Indonesian sales page copywriter. Return JSON only.",
+        body: JSON.stringify({
+          model: config.model,
+          temperature: 0.8,
+          response_format: {
+            type: "json_object",
           },
-          {
-            role: "user",
-            content: buildSalesPagePrompt(input),
-          },
-        ],
-      }),
-      cache: "no-store",
-      fallbackMessage: "Gagal menghasilkan sales page dari AI provider.",
-    },
-  );
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an expert Indonesian sales page copywriter. Return JSON only.",
+            },
+            {
+              role: "user",
+              content: buildSalesPagePrompt(input),
+            },
+          ],
+        }),
+        cache: "no-store",
+        fallbackMessage: "Gagal menghasilkan sales page dari AI provider.",
+      },
+    );
+  } catch (error) {
+    if (error instanceof TypeError && error.message === "fetch failed") {
+      throw new ApiError(
+        `Gagal menghubungi Sumopod. Cek SUMOPOD_API_BASE_URL dan API key. Base URL aktif saat ini: ${config.baseUrl}`,
+        502,
+      );
+    }
+
+    throw error;
+  }
 
   if (
     !isObject(response) ||

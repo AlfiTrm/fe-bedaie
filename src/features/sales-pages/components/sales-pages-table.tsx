@@ -1,6 +1,9 @@
+import Link from "next/link";
+
 import { formatDateLabel } from "@/src/lib/utils/format";
 import { normalizeSalesPageListItem } from "@/src/features/sales-pages/services/sales-page-list";
 import { DeleteSalesPageButton } from "@/src/features/sales-pages/components/delete-sales-page-button";
+import { getSalesPageDetailHref } from "@/src/features/sales-pages/services/sales-page-routes";
 import type { SalesPageRecord } from "@/src/types/sales-page";
 
 interface SalesPagesTableProps {
@@ -67,7 +70,15 @@ export function SalesPagesTable({ records }: SalesPagesTableProps) {
                   {formatDateLabel(item.createdAt)}
                 </td>
                 <td className="px-6 py-5 align-top">
-                  <DeleteSalesPageButton id={item.id} />
+                  <div className="flex items-center justify-end gap-3">
+                    <Link
+                      href={getSalesPageDetailHref(item.id)}
+                      className="rounded-xl border border-white/8 px-3 py-2 text-sm text-[var(--color-text-muted)] transition hover:border-white/16 hover:bg-white/4 hover:text-white"
+                    >
+                      Preview
+                    </Link>
+                    <DeleteSalesPageButton id={item.id} />
+                  </div>
                 </td>
               </tr>
             ))}
