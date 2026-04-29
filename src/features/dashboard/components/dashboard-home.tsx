@@ -1,36 +1,50 @@
-export function DashboardHome() {
+import type { SalesPageRecord } from "@/src/types/sales-page";
+import { SalesPagesOverview } from "@/src/features/sales-pages/components/sales-pages-overview";
+
+interface DashboardHomeProps {
+  records: SalesPageRecord[];
+}
+
+export function DashboardHome({ records }: DashboardHomeProps) {
+  const latestRecord = records[0];
+  const latestLabel = latestRecord
+    ? new Intl.DateTimeFormat("id-ID", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }).format(new Date(latestRecord.createdAt))
+    : "No activity yet";
+
   return (
     <section className="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.7fr)]">
       <div className="panel-surface rounded-[1.75rem] p-6 sm:p-8">
-        <div className="space-y-4">
-          <p className="text-sm text-[var(--color-text-muted)]">
-            Auth layer is in place.
-          </p>
+        <div className="space-y-3">
+          <p className="text-sm text-[var(--color-text-muted)]">Overview</p>
           <h3 className="max-w-3xl text-3xl font-semibold tracking-[-0.04em] text-white sm:text-[2.6rem]">
-            Workspace sekarang punya session gate yang siap dipakai buat flow utama.
+            Your saved sales pages, ready to review.
           </h3>
           <p className="max-w-2xl text-sm leading-8 text-[var(--color-text-muted)] sm:text-base">
-            Login, register, redirect, logout, dan protected shell sudah jalan.
-            Dari sini kita tinggal menambahkan surface kerja yang lebih nyata:
-            saved pages, generate form, dan preview hasil AI.
+            Keep track of generated pages, revisit the strongest drafts, and
+            manage what stays in your library before moving into preview and
+            generation work.
           </p>
         </div>
         <div className="mt-8 grid gap-4 border-t border-white/8 pt-6 sm:grid-cols-3">
           {[
             {
-              label: "Auth routes",
-              value: "4 endpoints",
-              detail: "login, register, me, logout",
+              label: "Saved records",
+              value: String(records.length).padStart(2, "0"),
+              detail: records.length === 1 ? "1 page stored in library" : `${records.length} pages stored in library`,
             },
             {
-              label: "Session storage",
-              value: "httpOnly cookie",
-              detail: "Bearer token tetap di server boundary",
+              label: "Last saved",
+              value: latestLabel,
+              detail: latestRecord ? latestRecord.productName : "Your next saved page will appear here",
             },
             {
-              label: "Ready next",
-              value: "history + generate",
-              detail: "phase 3 dan 4 tinggal melanjutkan shell ini",
+              label: "Status",
+              value: records.length > 0 ? "Library active" : "Ready to start",
+              detail: records.length > 0 ? "You can review or remove saved pages below" : "Saved pages will appear here after generation",
             },
           ].map((item) => (
             <div
@@ -48,21 +62,24 @@ export function DashboardHome() {
       </div>
       <div className="space-y-6">
         <div className="panel-surface rounded-[1.75rem] p-6">
-          <p className="text-base font-semibold text-white">Current surface</p>
+          <p className="text-base font-semibold text-white">Inside this view</p>
           <ul className="mt-4 space-y-3 text-sm leading-7 text-[var(--color-text-muted)]">
-            <li>Register dan login lewat route handler Next.js.</li>
-            <li>Cookie session disimpan aman di server layer.</li>
-            <li>Guest route dan protected route sudah dipisah.</li>
+            <li>See every saved sales page from the live backend in one list.</li>
+            <li>Check product, theme, and saved date at a glance.</li>
+            <li>Remove old drafts without leaving the workspace.</li>
           </ul>
         </div>
         <div className="panel-surface rounded-[1.75rem] p-6">
-          <p className="text-base font-semibold text-white">What comes next</p>
+          <p className="text-base font-semibold text-white">Coming next</p>
           <ul className="mt-4 space-y-3 text-sm leading-7 text-[var(--color-text-muted)]">
-            <li>History saved pages dan delete action.</li>
-            <li>Generate form dengan DeepSeek via Sumopod.</li>
-            <li>Preview full-screen yang siap didemo.</li>
+            <li>Generate a new page with DeepSeek through Sumopod.</li>
+            <li>Save the result automatically after generation succeeds.</li>
+            <li>Open a dedicated preview/detail page for each record.</li>
           </ul>
         </div>
+      </div>
+      <div className="xl:col-span-2">
+        <SalesPagesOverview records={records} />
       </div>
     </section>
   );
