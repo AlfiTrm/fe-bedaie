@@ -45,3 +45,24 @@ export function registerClient(payload: {
 export function logoutClient() {
   return postJson("/api/auth/logout");
 }
+
+export async function getCurrentSessionClient() {
+  const response = await fetch("/api/auth/me", {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+
+  const data = await response.json().catch(() => ({}));
+
+  if (!response.ok) {
+    throw new Error(
+      typeof data?.message === "string"
+        ? data.message
+        : "Gagal memuat sesi pengguna.",
+    );
+  }
+
+  return data as AuthResponse;
+}
