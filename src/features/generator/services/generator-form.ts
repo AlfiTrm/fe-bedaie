@@ -1,6 +1,10 @@
 import { validateGeneratorInput } from "./generator-contracts.ts";
 import type { GeneratePayload } from "./generator-client.ts";
-import type { SalesPageTheme } from "../../sales-pages/services/sales-page-theme-options.ts";
+import {
+  isSalesPageTheme,
+  type SalesPageTheme,
+} from "../../sales-pages/services/sales-page-theme-options.ts";
+import type { SalesPageRecord } from "@/src/types/sales-page";
 
 export interface GeneratorDraftValues {
   productName: string;
@@ -21,6 +25,20 @@ export function createGeneratorDraftValues(): GeneratorDraftValues {
     price: "",
     usp: "",
     theme: "clean-midnight",
+  };
+}
+
+export function buildDraftValuesFromSalesPage(
+  record: SalesPageRecord,
+): GeneratorDraftValues {
+  return {
+    productName: record.productName,
+    description: record.rawInput.description,
+    keyFeaturesText: record.rawInput.keyFeatures.join("\n"),
+    targetAudience: record.rawInput.targetAudience,
+    price: record.rawInput.price,
+    usp: record.rawInput.usp,
+    theme: isSalesPageTheme(record.theme) ? record.theme : "clean-midnight",
   };
 }
 

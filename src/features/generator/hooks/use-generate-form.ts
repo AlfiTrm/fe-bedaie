@@ -9,9 +9,9 @@ import {
   type GeneratorDraftValues,
 } from "@/src/features/generator/services/generator-form";
 
-export function useGenerateForm() {
+export function useGenerateForm(initialValues?: GeneratorDraftValues) {
   const [values, setValues] = useState<GeneratorDraftValues>(
-    createGeneratorDraftValues,
+    () => initialValues ?? createGeneratorDraftValues(),
   );
 
   const updateField = <TField extends keyof GeneratorDraftValues>(
