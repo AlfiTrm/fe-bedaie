@@ -131,20 +131,26 @@ export function GenerateFormFields({
         </label>
       </div>
 
-      <div className="flex flex-col gap-3 border-t border-white/8 pt-6 sm:flex-row sm:items-center sm:justify-between">
+      {errorMessage ? (
+        <div className="rounded-[1.4rem] border border-red-500/25 bg-red-500/10 px-4 py-4 text-sm leading-7 text-red-100">
+          <p className="font-medium text-white">Generation failed</p>
+          <p className="mt-1 text-red-100/88">{errorMessage}</p>
+        </div>
+      ) : null}
+
+      <div className="flex flex-col gap-4 border-t border-white/8 pt-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
           <p className="text-sm font-medium text-white">
             {hasMinimumInput ? "Draft is ready" : "Complete the core fields"}
           </p>
           <p className="text-xs text-[var(--color-text-muted)]">
-            {errorMessage ??
-              "AI generation will use this exact input structure next."}
+            AI generation will use this exact input structure next.
           </p>
         </div>
         <button
           type="submit"
           disabled={!hasMinimumInput || isPending}
-          className="primary-button inline-flex items-center justify-center"
+          className="primary-button inline-flex w-full items-center justify-center sm:w-auto"
         >
           {isPending
             ? "Generating..."

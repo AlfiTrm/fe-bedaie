@@ -11,6 +11,7 @@ import { PreviewHeroSection } from "@/src/features/sales-pages/components/previe
 import { PreviewPainPointsSection } from "@/src/features/sales-pages/components/preview-sections/preview-pain-points-section";
 import { PreviewSocialProofSection } from "@/src/features/sales-pages/components/preview-sections/preview-social-proof-section";
 import { PreviewTopbar } from "@/src/features/sales-pages/components/preview-sections/preview-topbar";
+import { buildSalesPagePreviewModel } from "@/src/features/sales-pages/services/sales-page-preview-model";
 import { getSalesPageThemePreset } from "@/src/features/sales-pages/services/sales-page-theme";
 import type { SalesPageRecord } from "@/src/types/sales-page";
 
@@ -18,69 +19,10 @@ interface SalesPagePreviewProps {
   record: SalesPageRecord;
 }
 
-function limitWords(value: string, maxWords: number) {
-  const words = value.trim().split(/\s+/).filter(Boolean);
-
-  if (words.length <= maxWords) {
-    return value.trim();
-  }
-
-  return `${words.slice(0, maxWords).join(" ")}...`;
-}
-
 export function SalesPagePreview({ record }: SalesPagePreviewProps) {
   const [openFaqIndex, setOpenFaqIndex] = useState(0);
   const theme = getSalesPageThemePreset(record.theme);
-  const benefits = record.aiOutput.benefits.slice(0, 3);
-  const features = record.aiOutput.features.slice(0, 6);
-  const socialProof = [
-    ...record.aiOutput.socialProof,
-    {
-      name: "Owner bisnis lokal",
-      review: `${record.productName} terasa lebih meyakinkan karena nilai utamanya langsung jelas sejak bagian awal halaman.`,
-    },
-    {
-      name: "Calon investor",
-      review: `Presentasinya membantu ${record.rawInput.targetAudience.toLowerCase()} memahami penawaran ini lebih cepat tanpa harus menebak-nebak detail penting.`,
-    },
-  ].slice(0, 4);
-  const painPoints = [
-    {
-      title: "Nilai Kabur",
-      description: limitWords(
-        `Penawaran sering belum terasa cukup relevan untuk ${record.rawInput.targetAudience.toLowerCase()}.`,
-        20,
-      ),
-    },
-    {
-      title: "Detail Tersebar",
-      description: limitWords(
-        "Detail penting sering tersebar, jadi keputusan terasa lebih lama dari yang seharusnya.",
-        20,
-      ),
-    },
-    {
-      title: "Keputusan Lambat",
-      description: limitWords(
-        "Tanpa manfaat, bukti, dan jaminan yang jelas, minat mudah turun sebelum sampai ke CTA.",
-        20,
-      ),
-    },
-  ];
-  const faqs = [
-    {
-      question: "Apakah penawaran ini cocok untuk saya?",
-      answer: `Penawaran ini dirancang untuk ${record.rawInput.targetAudience.toLowerCase()} yang ingin melihat nilai utama dengan cepat dan jelas.`,
-    },
-    {
-      question: "Apa keuntungan utamanya?",
-      answer: record.rawInput.usp,
-    },
-    {
-      question: "Apa yang membuatnya lebih aman dipertimbangkan?",
-      answer: record.aiOutput.pricing.guarantee,
-    },
-  ];
+  const preview = buildSalesPagePreviewModel(record);
 
   return (
     <section className="-mx-5 -mt-6 lg:-mx-8 lg:-mt-8">
@@ -104,23 +46,23 @@ export function SalesPagePreview({ record }: SalesPagePreviewProps) {
           />
           <PreviewPainPointsSection
             accentBlockClassName={theme.accentBlockClassName}
-            painPoints={painPoints}
+            painPoints={preview.painPoints}
           />
           <PreviewBenefitsSection
-            benefits={benefits}
+            benefits={preview.benefits}
             accentTextClassName={theme.accentTextClassName}
           />
           <PreviewFeaturesSection
-            features={features}
+            features={preview.features}
             priceText={record.aiOutput.pricing.priceText}
             guarantee={record.aiOutput.pricing.guarantee}
             accentBlockClassName={theme.accentBlockClassName}
           />
           <PreviewSocialProofSection
-            socialProof={socialProof}
+            socialProof={preview.socialProof}
           />
           <PreviewFaqSection
-            items={faqs}
+            items={preview.faqs}
             openIndex={openFaqIndex}
             onToggle={(index) =>
               setOpenFaqIndex((current) => (current === index ? -1 : index))

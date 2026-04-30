@@ -12,13 +12,15 @@ export function getDashboardSidebarLayout(
   isCollapsed: boolean,
 ): DashboardSidebarLayout {
   return {
-    sidebarWidthClassName: isCollapsed ? "lg:w-[5.5rem]" : "lg:w-[17rem]",
+    sidebarWidthClassName: isCollapsed
+      ? "w-[5rem] lg:w-[5.5rem]"
+      : "w-[5rem] lg:w-[17rem]",
     contentOffsetClassName: isCollapsed
-      ? "lg:pl-[5.5rem]"
-      : "lg:pl-[17rem]",
+      ? "pl-[5rem] lg:pl-[5.5rem]"
+      : "pl-[5rem] lg:pl-[17rem]",
     headerOffsetClassName: isCollapsed
-      ? "lg:left-[5.5rem]"
-      : "lg:left-[17rem]",
+      ? "left-[5rem] lg:left-[5.5rem]"
+      : "left-[5rem] lg:left-[17rem]",
     showLabels: !isCollapsed,
   };
 }

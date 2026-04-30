@@ -22,11 +22,13 @@ export function DashboardSidebar({
 }: DashboardSidebarProps) {
   const { items } = useDashboardNavigation();
   const layout = getDashboardSidebarLayout(isCollapsed);
+  const showDesktopLabels = layout.showLabels;
+  const desktopLabelClassName = showDesktopLabels ? "hidden lg:block" : "hidden";
 
   return (
     <aside
       className={cn(
-        "border-b border-white/8 bg-[rgba(11,12,15,0.96)] px-4 py-4 backdrop-blur transition-[width,padding] duration-200 lg:fixed lg:inset-y-0 lg:left-0 lg:z-30 lg:border-r lg:border-b-0 lg:px-5 lg:py-5",
+        "fixed inset-y-0 left-0 z-30 flex h-screen flex-col border-r border-white/8 bg-[rgba(11,12,15,0.96)] px-3 py-4 backdrop-blur transition-[width,padding] duration-200 lg:px-5 lg:py-5",
         layout.sidebarWidthClassName,
       )}
     >
@@ -34,16 +36,17 @@ export function DashboardSidebar({
         <div
           className={cn(
             "flex border-b border-white/8 pb-4",
-            layout.showLabels ? "items-center gap-3" : "items-center justify-center",
+            showDesktopLabels
+              ? "items-center justify-center lg:justify-start lg:gap-3"
+              : "items-center justify-center",
           )}
         >
-          {layout.showLabels ? (
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[rgba(205,163,73,0.08)] text-[var(--color-accent-soft)]">
-              <Icon icon="solar:widget-2-linear" width={20} />
-            </div>
-          ) : null}
-          {layout.showLabels ? (
-            <div className="min-w-0 flex-1">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[rgba(205,163,73,0.08)] text-[var(--color-accent-soft)]">
+            <Icon icon="solar:widget-2-linear" width={20} />
+          </div>
+
+          {showDesktopLabels ? (
+            <div className={cn("min-w-0 flex-1", desktopLabelClassName)}>
               <p className="truncate text-[0.95rem] font-semibold tracking-[-0.02em] text-white">
                 AI Sales Page
               </p>
@@ -52,6 +55,7 @@ export function DashboardSidebar({
               </p>
             </div>
           ) : null}
+
           <button
             type="button"
             onClick={onToggle}
@@ -75,19 +79,19 @@ export function DashboardSidebar({
             item.disabled ? (
               <div
                 key={item.label}
-                title={!layout.showLabels ? item.label : undefined}
+                title={item.label}
                 className={cn(
                   "rounded-2xl bg-white/3 px-3 py-2.5 opacity-65",
-                  layout.showLabels
-                    ? "flex items-center gap-3"
+                  showDesktopLabels
+                    ? "flex items-center justify-center lg:justify-start lg:gap-3"
                     : "flex items-center justify-center",
                 )}
               >
                 <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-black/20 text-[var(--color-text-muted)]">
                   <Icon icon={item.icon} width={18} />
                 </span>
-                {layout.showLabels ? (
-                  <div className="min-w-0">
+                {showDesktopLabels ? (
+                  <div className={cn("min-w-0", desktopLabelClassName)}>
                     <p className="text-sm font-medium text-white">{item.label}</p>
                     <p className="text-xs text-[var(--color-text-muted)]">Soon</p>
                   </div>
@@ -97,11 +101,11 @@ export function DashboardSidebar({
               <Link
                 key={item.href}
                 href={item.href}
-                title={!layout.showLabels ? item.label : undefined}
+                title={item.label}
                 className={cn(
                   "rounded-2xl px-3 py-2.5 transition",
-                  layout.showLabels
-                    ? "flex items-center gap-3"
+                  showDesktopLabels
+                    ? "flex items-center justify-center lg:justify-start lg:gap-3"
                     : "flex items-center justify-center",
                   item.active
                     ? "bg-white/7"
@@ -118,23 +122,23 @@ export function DashboardSidebar({
                 >
                   <Icon icon={item.icon} width={18} />
                 </span>
-                {layout.showLabels ? (
-                  <span className="min-w-0 text-sm font-medium text-white">
+                {showDesktopLabels ? (
+                  <span className={cn("min-w-0 text-sm font-medium text-white", desktopLabelClassName)}>
                     {item.label}
                   </span>
                 ) : null}
               </Link>
             ),
           )}
-        </nav>
+          </nav>
 
-        <div className="mt-5 space-y-3 lg:mt-auto">
-          <div className={cn(!layout.showLabels && "px-1")}>
-            {layout.showLabels ? (
-              <div className="space-y-1 px-1">
-                <p className="text-xs text-[var(--color-text-muted)]">
-                  Signed in
-                </p>
+          <div className="mt-5 space-y-3 lg:mt-auto">
+            <div className={cn(!showDesktopLabels && "px-1")}>
+              {showDesktopLabels ? (
+                <div className={cn("space-y-1 px-1", desktopLabelClassName)}>
+                  <p className="text-xs text-[var(--color-text-muted)]">
+                    Signed in
+                  </p>
                 <p className="truncate text-sm font-semibold text-white">
                   {user.name}
                 </p>
@@ -148,14 +152,14 @@ export function DashboardSidebar({
                   {user.name.slice(0, 1).toUpperCase()}
                 </div>
               </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          <div>
-            <LogoutButton compact={!layout.showLabels} />
+            <div>
+              <LogoutButton compact={!showDesktopLabels} />
+            </div>
           </div>
         </div>
-      </div>
     </aside>
   );
 }

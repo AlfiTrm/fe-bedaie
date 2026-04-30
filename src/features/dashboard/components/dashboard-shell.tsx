@@ -42,7 +42,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
               </h2>
             </div>
           </header>
-          <main className="flex-1 px-5 pt-24 pb-6 lg:px-8 lg:pt-24 lg:pb-8">
+          <main className="flex-1 px-4 pt-24 pb-6 sm:px-5 lg:px-8 lg:pt-24 lg:pb-8">
             {children}
           </main>
         </div>

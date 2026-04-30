@@ -73,7 +73,7 @@ export function GenerateFormSidebar({
           <p className="text-xs text-[var(--color-text-muted)]">
             Payload preview
           </p>
-          <pre className="mt-3 overflow-x-auto text-xs leading-6 text-[var(--color-text-muted)]">
+          <pre className="mt-3 overflow-x-auto whitespace-pre-wrap break-words text-xs leading-6 text-[var(--color-text-muted)]">
             {payloadPreview
               ? JSON.stringify(payloadPreview, null, 2)
               : "Complete the form to preview the request payload."}
