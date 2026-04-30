@@ -44,7 +44,7 @@ export function PreviewHeroSection({
       <div
         className={`absolute left-1/2 top-20 h-72 w-72 -translate-x-1/2 rounded-full blur-3xl ${accentHaloClassName}`}
       />
-      <div className="relative flex min-h-[calc(100vh-8rem)] flex-col justify-center px-6 py-14 text-center sm:px-10 lg:px-16 lg:py-20">
+      <div className="relative flex min-h-[calc(100vh-10rem)] flex-col justify-center px-5 py-12 text-center sm:min-h-[calc(100vh-8rem)] sm:px-10 sm:py-14 lg:px-16 lg:py-20">
         <div className="mx-auto max-w-5xl space-y-8">
           <div className="mx-auto flex flex-wrap items-center justify-center gap-3">
             {heroIcons.map((icon) => (
@@ -61,7 +61,7 @@ export function PreviewHeroSection({
             <p className="text-sm font-medium tracking-[0.12em] text-slate-500 uppercase">
               {productName}
             </p>
-            <h1 className="mx-auto max-w-5xl text-5xl font-semibold tracking-[-0.08em] text-slate-950 sm:text-[5.8rem] sm:leading-[0.9]">
+            <h1 className="mx-auto max-w-5xl text-[2.8rem] font-semibold tracking-[-0.08em] text-slate-950 sm:text-[5.8rem] sm:leading-[0.9]">
               {shouldHighlight ? (
                 <>
                   {baseHeadline}{" "}
@@ -71,12 +71,12 @@ export function PreviewHeroSection({
                 headline
               )}
             </h1>
-            <p className="mx-auto max-w-3xl text-lg leading-8 text-slate-600">
+            <p className="mx-auto max-w-3xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
               {subheadline}
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-3">
+          <div className="grid gap-3 sm:flex sm:flex-wrap sm:items-center sm:justify-center">
             <a
               href="#cta"
               className={`${ctaClassName} inline-flex items-center justify-center`}

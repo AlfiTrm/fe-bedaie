@@ -2,6 +2,7 @@
 
 import { GenerateFormFields } from "@/src/features/generator/components/generate-form-fields";
 import { GenerateFormHeader } from "@/src/features/generator/components/generate-form-header";
+import { GenerateProgressOverlay } from "@/src/features/generator/components/generate-progress-overlay";
 import { GenerateFormSidebar } from "@/src/features/generator/components/generate-form-sidebar";
 import { useGenerateForm } from "@/src/features/generator/hooks/use-generate-form";
 import { useSubmitGenerateForm } from "@/src/features/generator/hooks/use-submit-generate-form";
@@ -24,30 +25,36 @@ export function GenerateSalesPageForm({
   const isRegenerating = Boolean(initialValues);
 
   return (
-    <section className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
-      <div className="panel-surface rounded-[1.75rem] p-6 sm:p-8">
-        <GenerateFormHeader
-          isRegenerating={isRegenerating}
-          sourceProductName={sourceProductName}
-        />
+    <>
+      {isPending ? (
+        <GenerateProgressOverlay isRegenerating={isRegenerating} />
+      ) : null}
 
-        <GenerateFormFields
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)]">
+        <div className="panel-surface rounded-[1.75rem] p-6 sm:p-8">
+          <GenerateFormHeader
+            isRegenerating={isRegenerating}
+            sourceProductName={sourceProductName}
+          />
+
+          <GenerateFormFields
+            values={values}
+            themeOptions={themeOptions}
+            hasMinimumInput={hasMinimumInput}
+            isPending={isPending}
+            isRegenerating={isRegenerating}
+            errorMessage={errorMessage}
+            updateField={updateField}
+            onSubmit={submit}
+          />
+        </div>
+
+        <GenerateFormSidebar
           values={values}
-          themeOptions={themeOptions}
-          hasMinimumInput={hasMinimumInput}
-          isPending={isPending}
-          isRegenerating={isRegenerating}
-          errorMessage={errorMessage}
-          updateField={updateField}
-          onSubmit={submit}
+          keyFeatures={keyFeatures}
+          payloadPreview={payloadPreview}
         />
-      </div>
-
-      <GenerateFormSidebar
-        values={values}
-        keyFeatures={keyFeatures}
-        payloadPreview={payloadPreview}
-      />
-    </section>
+      </section>
+    </>
   );
 }

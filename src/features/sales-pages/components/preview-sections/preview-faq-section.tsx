@@ -42,6 +42,7 @@ export function PreviewFaqSection({
                 className="flex w-full items-center justify-between gap-4 px-6 py-6 text-left"
                 onClick={() => onToggle(index)}
                 aria-expanded={openIndex === index}
+                aria-controls={`faq-answer-${index}`}
               >
                 <span className="text-lg font-semibold tracking-[-0.04em] text-slate-950">
                   {item.question}
@@ -56,7 +57,11 @@ export function PreviewFaqSection({
                   <Icon icon="solar:alt-arrow-down-linear" className="h-4 w-4" />
                 </span>
               </button>
-              <div className="landing-faq-answer" data-open={openIndex === index}>
+              <div
+                id={`faq-answer-${index}`}
+                className="landing-faq-answer"
+                data-open={openIndex === index}
+              >
                 <div className="landing-faq-answer-inner px-6 pb-6">
                   <p className="border-t border-slate-200 pt-4 text-sm leading-8 text-slate-600">
                     {item.answer}

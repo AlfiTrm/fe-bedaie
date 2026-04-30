@@ -29,7 +29,9 @@ export function LogoutButton({ compact = false }: LogoutButtonProps) {
         disabled={isPending}
       >
         <Icon icon="solar:logout-2-linear" width={18} />
-        {compact ? null : isPending ? "Logging out..." : "Logout"}
+        <span className={cn(compact && "hidden", compact ? "" : "hidden lg:inline")}>
+          {isPending ? "Logging out..." : "Logout"}
+        </span>
       </button>
     </div>
   );
